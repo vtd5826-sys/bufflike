@@ -1,10 +1,11 @@
 :root {
-    --primary: #ff4757;
-    --secondary: #ffa502;
-    --dark-bg: #0b0e14;
-    --card-bg: rgba(20, 25, 38, 0.9);
-    --neon-glow: 0 0 15px rgba(255, 71, 87, 0.6);
-    --border-color: rgba(255, 165, 2, 0.4);
+    --primary: #ff3838;
+    --primary-glow: rgba(255, 56, 56, 0.5);
+    --secondary: #ff9f1a;
+    --secondary-glow: rgba(255, 159, 26, 0.4);
+    --bg-dark: #07090e;
+    --card-bg: rgba(13, 17, 26, 0.85);
+    --border-glow: rgba(255, 159, 26, 0.3);
 }
 
 * {
@@ -15,7 +16,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #05070a 0%, #151a28 50%, #05070a 100%);
+    background: radial-gradient(circle at center, #131b2e 0%, #07090e 100%);
     background-attachment: fixed;
     color: #fff;
     min-height: 100vh;
@@ -27,72 +28,78 @@ body {
 
 .container {
     width: 100%;
-    max-width: 500px;
+    max-width: 480px;
     background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), var(--neon-glow);
-    backdrop-filter: blur(10px);
+    border: 2px solid var(--border-glow);
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 56, 56, 0.2);
+    backdrop-filter: blur(16px);
     overflow: hidden;
-    animation: fadeIn 0.5s ease-in-out;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-15px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .header {
-    background: linear-gradient(90deg, #ff4757, #ffa502);
-    padding: 20px;
+    background: linear-gradient(135deg, #1f1f2e 0%, #10141f 100%);
+    padding: 25px 20px;
     text-align: center;
     position: relative;
+    border-bottom: 2px solid rgba(255, 159, 26, 0.2);
 }
 
 .header h1 {
     font-family: 'Teko', sans-serif;
-    font-size: 36px;
+    font-size: 42px;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0 10px var(--primary), 0 0 20px rgba(255, 56, 56, 0.5);
+    margin-bottom: 2px;
 }
 
 .header p {
-    font-size: 12px;
-    font-weight: 600;
-    color: #ffeaa7;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--secondary);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
 }
 
 .nav-switch {
     display: flex;
-    background: #0f141e;
-    border-bottom: 1px solid #2f3640;
+    background: rgba(7, 9, 14, 0.9);
+    padding: 6px;
+    gap: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .nav-btn {
     flex: 1;
-    padding: 12px;
-    background: none;
+    padding: 10px;
+    background: transparent;
     border: none;
-    color: #a4b0be;
+    color: #8892b0;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     text-transform: uppercase;
-    font-size: 13px;
+    font-size: 12px;
+    border-radius: 12px;
+    letter-spacing: 1px;
 }
 
 .nav-btn.active {
-    color: #ffa502;
-    background: rgba(255, 165, 2, 0.1);
-    border-bottom: 2px solid #ffa502;
+    color: #fff;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    box-shadow: 0 0 15px var(--primary-glow);
 }
 
 .content {
-    padding: 25px;
+    padding: 24px;
 }
 
 .section {
@@ -101,120 +108,140 @@ body {
 
 .section.active {
     display: block;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .form-group {
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
+    margin-bottom: 8px;
+    font-weight: 700;
     font-size: 13px;
-    color: #dfe4ea;
+    color: #ccd6f6;
+    letter-spacing: 0.5px;
 }
 
 .form-group label i {
     color: var(--secondary);
-    margin-right: 5px;
+    margin-right: 6px;
 }
 
 .form-control {
     width: 100%;
-    padding: 12px 15px;
-    background: rgba(10, 13, 20, 0.8);
-    border: 1px solid #2f3640;
-    border-radius: 10px;
+    padding: 14px 16px;
+    background: rgba(7, 9, 14, 0.8);
+    border: 2px solid #1e293b;
+    border-radius: 14px;
     color: #fff;
     font-size: 15px;
     transition: all 0.3s ease;
 }
 
 .form-control:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 10px rgba(255, 71, 87, 0.4);
+    border-color: var(--secondary);
+    box-shadow: 0 0 12px var(--secondary-glow);
     outline: none;
+    background: rgba(7, 9, 14, 0.95);
 }
 
 .packages-title {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    margin-bottom: 10px;
-    color: #ffa502;
+    margin-bottom: 12px;
+    color: var(--secondary);
     text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .packages-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .package-card {
-    background: rgba(15, 20, 30, 0.9);
-    border: 2px solid #2f3640;
-    border-radius: 12px;
-    padding: 15px;
+    background: rgba(18, 24, 38, 0.7);
+    border: 2px solid #1e293b;
+    border-radius: 16px;
+    padding: 18px 12px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
 .package-card:hover {
-    border-color: #ffa502;
-    transform: translateY(-2px);
+    border-color: var(--secondary);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
 }
 
 .package-card.active {
     border-color: var(--primary);
-    background: linear-gradient(135deg, rgba(255, 71, 87, 0.15), rgba(15, 20, 30, 0.9));
-    box-shadow: 0 0 15px rgba(255, 71, 87, 0.3);
+    background: linear-gradient(135deg, rgba(255, 56, 56, 0.15) 0%, rgba(18, 24, 38, 0.9) 100%);
+    box-shadow: 0 0 20px var(--primary-glow);
 }
 
 .package-card h3 {
     font-family: 'Teko', sans-serif;
-    font-size: 24px;
+    font-size: 28px;
     color: #fff;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
 }
 
 .package-card span {
     font-size: 11px;
-    color: #ced6e0;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2px 6px;
-    border-radius: 4px;
+    font-weight: 600;
+    color: #a0aec0;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 3px 8px;
+    border-radius: 6px;
 }
 
 .btn-main {
     width: 100%;
-    padding: 13px;
-    background: linear-gradient(90deg, #ff4757, #ff6b81);
+    padding: 15px;
+    background: linear-gradient(135deg, var(--primary) 0%, #ff6b6b 100%);
     border: none;
-    border-radius: 10px;
+    border-radius: 14px;
     color: #fff;
     font-size: 16px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
-    transition: all 0.3s;
+    box-shadow: 0 6px 20px var(--primary-glow);
+    transition: all 0.3s ease;
 }
 
 .btn-main:hover {
-    opacity: 0.9;
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 56, 56, 0.7);
+    filter: brightness(1.1);
+}
+
+.btn-main:active {
+    transform: translateY(1px);
 }
 
 .key-table-container {
     max-height: 220px;
     overflow-y: auto;
     margin-top: 15px;
-    border: 1px solid #2f3640;
-    border-radius: 8px;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    background: rgba(7, 9, 14, 0.5);
 }
 
 table {
@@ -225,75 +252,95 @@ table {
 }
 
 th, td {
-    padding: 8px 10px;
-    border-bottom: 1px solid #2f3640;
+    padding: 10px 12px;
+    border-bottom: 1px solid #1e293b;
 }
 
 th {
-    background: #1a2233;
-    color: #ffa502;
+    background: #111827;
+    color: var(--secondary);
+    font-weight: 700;
 }
 
 .modal {
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(5, 7, 11, 0.85);
+    backdrop-filter: blur(8px);
     justify-content: center; align-items: center;
     z-index: 1000; padding: 20px;
 }
 
 .modal-content {
-    background: #141926;
+    background: #10141f;
     border: 2px solid var(--secondary);
-    border-radius: 15px;
-    width: 100%; max-width: 380px;
+    border-radius: 20px;
+    width: 100%; max-width: 400px;
     padding: 25px;
     position: relative;
+    box-shadow: 0 0 30px var(--secondary-glow);
+    animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 .close-modal {
-    position: absolute; top: 12px; right: 15px;
-    background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;
+    position: absolute; top: 15px; right: 18px;
+    background: transparent; border: none; color: #fff; font-size: 22px; cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: var(--primary);
 }
 
 .discord-hint {
     font-size: 11px;
-    color: #a4b0be;
-    margin-top: 8px;
+    color: #8892b0;
+    margin-top: 10px;
     text-align: center;
+    line-height: 1.4;
 }
 
 .discord-hint a {
     color: var(--secondary);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
+}
+
+.discord-hint a:hover {
+    text-decoration: underline;
 }
 
 #toast {
     visibility: hidden;
-    min-width: 260px;
-    background-color: #2ed573;
+    min-width: 280px;
+    background: linear-gradient(135deg, #059669, #10b981);
     color: #fff;
     text-align: center;
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: 12px;
+    padding: 14px 20px;
     position: fixed;
     z-index: 2000;
     left: 50%; bottom: 30px;
     transform: translateX(-50%);
     font-weight: 700;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
 #toast.show {
     visibility: visible;
-    animation: fadeInOut 3.5s;
+    animation: fadeInOut 3.5s ease;
 }
 
 @keyframes fadeInOut {
-    0% { bottom: 0; opacity: 0; }
+    0% { bottom: -20px; opacity: 0; }
     15% { bottom: 30px; opacity: 1; }
     85% { bottom: 30px; opacity: 1; }
-    100% { bottom: 0; opacity: 0; }
+    100% { bottom: -20px; opacity: 0; }
 }
