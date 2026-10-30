@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Buff Like Free Fire & Quản Lý Key VIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff4757;
+            --secondary: #ffa502;
+            --dark-bg: #0b0e14;
+            --card-bg: rgba(20, 25, 38, 0.9);
+            --neon-glow: 0 0 15px rgba(255, 71, 87, 0.6);
+            --border-color: rgba(255, 165, 2, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #05070a 0%, #151a28 50%, #05070a 100%);
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), var(--neon-glow);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: linear-gradient(90deg, #ff4757, #ffa502);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-family: 'Teko', sans-serif;
+            font-size: 36px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .header p {
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffeaa7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-switch {
+            display: flex;
+            background: #0f141e;
+            border-bottom: 1px solid #2f3640;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: #a4b0be;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        .nav-btn.active {
+            color: #ffa502;
+            background: rgba(255, 165, 2, 0.1);
+            border-bottom: 2px solid #ffa502;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #dfe4ea;
+        }
+
+        .form-group label i {
+            color: var(--secondary);
+            margin-right: 5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(10, 13, 20, 0.8);
+            border: 1px solid #2f3640;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(255, 71, 87, 0.4);
+            outline: none;
+        }
+
+        .packages-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #ffa502;
+            text-transform: uppercase;
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .package-card {
+            background: rgba(15, 20, 30, 0.9);
+            border: 2px solid #2f3640;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .package-card:hover {
+            border-color: #ffa502;
+            transform: translateY(-2px);
+        }
+
+        .package-card.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.15), rgba(15, 20, 30, 0.9));
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.3);
+        }
+
+        .package-card h3 {
+            font-family: 'Teko', sans-serif;
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .package-card span {
+            font-size: 11px;
+            color: #ced6e0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(90deg, #ff4757, #ff6b81);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+            transition: all 0.3s;
+        }
+
+        .btn-main:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Bảng danh sách key */
+        .key-table-container {
+            max-height: 220px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border: 1px solid #2f3640;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #2f3640;
+        }
+
+        th {
+            background: #1a2233;
+            color: #ffa502;
+        }
+
+        /* Modal VIP */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center; align-items: center;
+            z-index: 1000; padding: 20px;
+        }
+
+        .modal-content {
+            background: #141926;
+            border: 2px solid var(--secondary);
+            border-radius: 15px;
+            width: 100%; max-width: 380px;
+            padding: 25px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute; top: 12px; right: 15px;
+            background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;
+        }
+
+        .discord-hint {
+            font-size: 11px;
+            color: #a4b0be;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .discord-hint a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Toast Notification */
+        #toast {
+            visibility: hidden;
+            min-width: 260px;
+            background-color: #2ed573;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: fixed;
+            z-index: 2000;
+            left: 50%; bottom: 30px;
+            transform: translateX(-50%);
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        #toast.show {
+            visibility: visible;
+            animation: fadeInOut 3.5s;
+        }
+
+        @keyframes fadeInOut {
+            0% { bottom: 0; opacity: 0; }
+            15% { bottom: 30px; opacity: 1; }
+            85% { bottom: 30px; opacity: 1; }
+            100% { bottom: 0; opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-fire"></i> Free Fire Hub</h1>
+            <p>Hệ Thống Buff Like & Quản Lý Key VIP</p>
+        </div>
+
+        <div class="nav-switch">
+            <button class="nav-btn active" onclick="switchTab('buffTab', this)"><i class="fa-solid fa-bolt"></i> Buff Like</button>
+            <button class="nav-btn" onclick="switchTab('adminTab', this)"><i class="fa-solid fa-shield-halved"></i> Admin Key</button>
+        </div>
+
+        <div class="content">
+            <!-- TAB 1: BUFF LIKE -->
+            <div id="buffTab" class="section active">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-gamepad"></i> Tên Nhân Vật (Ingame)</label>
+                    <input type="text" id="ign" class="form-control" placeholder="Nhập tên nhân vật...">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-id-card"></i> ID Free Fire (Đủ 8 số)</label>
+                    <input type="text" id="ffid" class="form-control" placeholder="VD: 12345678" maxlength="8">
+                </div>
+
+                <div class="packages-title"><i class="fa-solid fa-gift"></i> Chọn Gói Buff:</div>
+                <div class="packages-grid">
+                    <div class="package-card active" onclick="selectPackage(50, this)">
+                        <h3>+50 LIKE</h3>
+                        <span>Miễn phí</span>
+                    </div>
+                    <div class="package-card" onclick="selectPackage(200, this)">
+                        <h3>+200 LIKE</h3>
+                        <span>Yêu cầu Key VIP</span>
+                    </div>
+                </div>
+
+                <button class="btn-main" onclick="handleBuff()">Tiến Hành Buff Like</button>
+            </div>
+
+            <!-- TAB 2: ADMIN KEY MANAGEMENT -->
+            <div id="adminTab" class="section">
+                <!-- Khu vực đăng nhập Admin -->
+                <div id="adminLoginBox">
+                    <h3 style="color: #ffa502; margin-bottom: 15px; font-size: 16px;"><i class="fa-solid fa-lock"></i> Đăng Nhập Quản Trị</h3>
+                    <div class="form-group">
+                        <label>Tài khoản</label>
+                        <input type="text" id="admUser" class="form-control" placeholder="Nhập tài khoản admin...">
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu</label>
+                        <input type="password" id="admPass" class="form-control" placeholder="Nhập mật khẩu admin...">
+                    </div>
+                    <button class="btn-main" onclick="loginAdmin()">Đăng Nhập</button>
+                </div>
+
+                <!-- Khu vực tạo & quản lý key sau khi đăng nhập thành công -->
+                <div id="adminDashboard" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span style="color: #2ed573; font-weight: 700; font-size: 13px;"><i class="fa-solid fa-circle-check"></i> Đã đăng nhập: TDZADMIN</span>
+                        <button onclick="logoutAdmin()" style="background: #ff4757; border: none; color: #fff; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px;">Đăng Xuất</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tạo Tài Khoản VIP Mới</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="newKeyUser" class="form-control" placeholder="Tên TK VIP">
+                            <input type="text" id="newKeyPass" class="form-control" placeholder="Mật khẩu">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Thời Hạn Hết Hạn</label>
+                        <select id="newKeyDuration" class="form-control">
+                            <option value="1">1 Giờ</option>
+                            <option value="24">1 Ngày</option>
+                            <option value="168">7 Ngày</option>
+                            <option value="720">30 Ngày</option>
+                        </select>
+                    </div>
+
+                    <button class="btn-main" onclick="createKey()">Tạo Key VIP</button>
+
+                    <div class="key-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tài Khoản</th>
+                                    <th>MK</th>
+                                    <th>Hết Hạn</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="keyListBody">
+                                <!-- Danh sách key load từ JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nhập Key VIP khi chọn gói 200 Like -->
+    <div class="modal" id="vipModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeVipModal()">&times;</button>
+            <div style="font-family: 'Teko', sans-serif; font-size: 26px; color: #ffa502; margin-bottom: 12px; text-align: center;"><i class="fa-solid fa-crown"></i> Xác Thực Key VIP (200 Like)</div>
+            
+            <div class="form-group">
+                <label>Tài khoản VIP</label>
+                <input type="text" id="vipUser" class="form-control" placeholder="Nhập tài khoản VIP...">
+            </div>
+
+            <div class="form-group">
+                <label>Mật khẩu VIP</label>
+                <input type="password" id="vipPass" class="form-control" placeholder="Nhập mật khẩu VIP...">
+                <div class="discord-hint">
+                    Bạn không có mật khẩu? <a href="https://discord.com" target="_blank">Tham gia Discord để liên hệ</a>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="closeVipModal()" style="background: #2f3640; color: #fff; border: none; padding: 10px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: 600;">Hủy</button>
+                <button onclick="verifyAndBuff200()" style="background: #ffa502; color: #000; border: none; padding: 10px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: 800;">Xác Nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">Đã gửi thành công! Vui lòng chờ admin phê duyệt 📢</div>
+
+    <script>
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1565719904118767646/la3TtguPEf-lKEnvGtj4B9COe5E5d2-WYTJzjQaYln4UMGZGt0n7Kc4nuv0Pri_kSPxG";
+        let selectedPkg = 50;
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function selectPackage(pkg, element) {
+            selectedPkg = pkg;
+            document.querySelectorAll('.package-card').forEach(card => card.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function showToast(message = "Đã gửi thành công! Vui lòng chờ admin phê duyệt 📢") {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3500);
+        }
+
+        // --- XỬ LÝ ADMIN LOGIN ---
+        function loginAdmin() {
+            const u = document.getElementById('admUser').value.trim();
+            const p = document.getElementById('admPass').value.trim();
+
+            if (u === "TDZADMIN" && p === "TDZ2013@") {
+                document.getElementById('adminLoginBox').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                loadKeyTable();
+            } else {
+                alert("Sai tài khoản hoặc mật khẩu Admin!");
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('adminLoginBox').style.display = 'block';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('admUser').value = '';
+            document.getElementById('admPass').value = '';
+        }
+
+        // --- QUẢN LÝ KEY VIP ---
+        function createKey() {
+            const u = document.getElementById('newKeyUser').value.trim();
+            const p = document.getElementById('newKeyPass').value.trim();
+            const hours = parseInt(document.getElementById('newKeyDuration').value);
+
+            if (!u || !p) {
+                alert("Vui lòng nhập đầy đủ tài khoản và mật khẩu VIP!");
+                return;
+            }
+
+            let keys = JSON.parse(localStorage.getItem('ff_vip_keys')) || [];
+            const expiryTime = new Date().getTime() + (hours * 3600 * 1000);
+
+            keys.push({ user: u, pass: p, expiry: expiryTime });
+            localStorage.setItem('ff_vip_keys', JSON.stringify(keys));
+
+            document.getElementById('newKeyUser').value = '';
+            document.getElementById('newKeyPass').value = '';
+            alert("Tạo Key VIP thành công!");
+            loadKeyTable();
+        }
+
+        function loadKeyTable() {
+            let keys = JSON.parse(localStorage.getItem('ff_vip_keys')) || [];
+            const tbody = document.getElementById('keyListBody');
+            tbody.innerHTML = '';
+
+            const now = new Date().getTime();
+            keys.forEach((k, index) => {
+                const isExpired = now > k.expiry;
+                const expiryDateStr = new Date(k.expiry).toLocaleString('vi-VN');
+                
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${k.user}</td>
+                    <td>${k.pass}</td>
+                    <td style="color: ${isExpired ? '#ff4757' : '#2ed573'}">${isExpired ? 'Hết hạn' : expiryDateStr}</td>
+                    <td><button onclick="deleteKey(${index})" style="background: #ff4757; color: #fff; border:none; padding:3px 6px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteKey(index) {
+            let keys = JSON.parse(localStorage.getItem('ff_vip_keys')) || [];
+            keys.splice(index, 1);
+            localStorage.setItem('ff_vip_keys', JSON.stringify(keys));
+            loadKeyTable();
+        }
+
+        // --- XỬ LÝ BUFF LIKE ---
+        function handleBuff() {
+            const ign = document.getElementById('ign').value.trim();
+            const ffid = document.getElementById('ffid').value.trim();
+
+            if (!ign) {
+                alert("Vui lòng nhập tên nhân vật Free Fire!");
+                return;
+            }
+            if (ffid.length !== 8 || isNaN(ffid)) {
+                alert("ID Free Fire phải đúng chính xác 8 chữ số!");
+                return;
+            }
+
+            if (localStorage.getItem('ff_buffed_' + ffid)) {
+                alert("ID Free Fire này đã thực hiện buff rồi! Mỗi người chỉ được 1 lần.");
+                return;
+            }
+
+            if (selectedPkg === 50) {
+                sendDiscordWebhook(ign, ffid, "+50 Like (Miễn Phí)", "Không yêu cầu VIP");
+                localStorage.setItem('ff_buffed_' + ffid, 'true');
+                showToast();
+                resetForm();
+            } else if (selectedPkg === 200) {
+                document.getElementById('vipModal').style.display = 'flex';
+            }
+        }
+
+        function closeVipModal() {
+            document.getElementById('vipModal').style.display = 'none';
+        }
+
+        function verifyAndBuff200() {
+            const ign = document.getElementById('ign').value.trim();
+            const ffid = document.getElementById('ffid').value.trim();
+            const vUser = document.getElementById('vipUser').value.trim();
+            const vPass = document.getElementById('vipPass').value.trim();
+
+            if (!vUser || !vPass) {
+                alert("Vui lòng nhập tài khoản và mật khẩu VIP!");
+                return;
+            }
+
+            let keys = JSON.parse(localStorage.getItem('ff_vip_keys')) || [];
+            const now = new Date().getTime();
+            let foundKey = keys.find(k => k.user === vUser && k.pass === vPass);
+
+            if (!foundKey) {
+                alert("Tài khoản hoặc mật khẩu VIP không chính xác!");
+                return;
+            }
+
+            if (now > foundKey.expiry) {
+                alert("Tài khoản VIP này đã hết thời gian sử dụng!");
+                return;
+            }
+
+            sendDiscordWebhook(ign, ffid, "+200 Like (VIP)", `Tài khoản VIP: ${vUser}`);
+            localStorage.setItem('ff_buffed_' + ffid, 'true');
+            
+            closeVipModal();
+            showToast();
+            resetForm();
+        }
+
+        function sendDiscordWebhook(ign, ffid, packageName, note) {
+            const payload = {
+                embeds: [{
+                    title: "🚀 YÊU CẦU BUFF LIKE FREE FIRE MỚI",
+                    color: 16738095,
+                    fields: [
+                        { name: "👤 Tên Nhân Vật", value: `\`${ign}\``, inline: true },
+                        { name: "🆔 ID Free Fire", value: `\`${ffid}\``, inline: true },
+                        { name: "🎁 Gói Đăng Ký", value: `\`${packageName}\``, inline: false },
+                        { name: "🔐 Ghi Chú / Xác Thực", value: `\`${note}\``, inline: false },
+                        { name: "⏰ Thời Gian", value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
+                    ],
+                    footer: { text: "Hệ thống tự động Buff Like Free Fire" }
+                }]
+            };
+
+            fetch(WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).catch(err => console.error("Lỗi gửi webhook:", err));
+        }
+
+        function resetForm() {
+            document.getElementById('ign').value = '';
+            document.getElementById('ffid').value = '';
+            document.getElementById('vipUser').value = '';
+            document.getElementById('vipPass').value = '';
+        }
+    </script>
+</body>
+</html>
