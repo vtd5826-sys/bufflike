@@ -32,23 +32,28 @@ function showToast(message) {
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3500);
 }
 
-// Tạo link rút gọn Link4M tự động trỏ tới trang get-key.html
+// --- ĐÃ SỬA LỖI API LINK4M CHO GITHUB PAGES ---
 async function generateLink4mKey() {
+    // Tự động lấy URL trang get-key.html hiện tại của bạn trên GitHub
     const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
     const destinationUrl = currentPath + 'get-key.html';
     const apiUrl = `https://link4m.co/api-shorten/v2?api=${LINK4M_API_KEY}&url=${encodeURIComponent(destinationUrl)}`;
 
+    showToast("Đang tạo liên kết vượt link...");
+
     try {
-        showToast("Đang kết nối Link4M API...");
+        // Thử gọi API lấy link rút gọn JSON
         const response = await fetch(apiUrl);
         const data = await response.json();
 
-        if (data.status === 'success' && data.shortenedUrl) {
+        if (data && data.shortenedUrl) {
             window.open(data.shortenedUrl, '_blank');
         } else {
+            // Fallback sang cổng chuyển hướng trực tiếp nếu cấu trúc phản hồi thay đổi
             window.open(`https://link4m.co/st?api=${LINK4M_API_KEY}&url=${encodeURIComponent(destinationUrl)}`, '_blank');
         }
     } catch (err) {
+        // Nếu bị chặn CORS hoàn toàn, tự động mở link dự phòng Link4M để người dùng không bị kẹt
         window.open(`https://link4m.co/st?api=${LINK4M_API_KEY}&url=${encodeURIComponent(destinationUrl)}`, '_blank');
     }
 }
