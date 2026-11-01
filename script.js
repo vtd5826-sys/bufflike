@@ -5,10 +5,18 @@ const LINK4M_API_KEY = "6a3a33c4819a596e7155dd57";
 let selectedPkg = 50;
 
 function switchTab(tabId, btn) {
-    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    btn.classList.add('active');
+    document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+    document.getElementById('buffTab').style.display = 'none';
+    document.getElementById('adminTab').style.display = 'none';
+    
+    document.getElementById('tabBuffBtn').style.background = 'transparent';
+    document.getElementById('tabBuffBtn').style.color = '#666';
+    document.getElementById('tabAdminBtn').style.background = 'transparent';
+    document.getElementById('tabAdminBtn').style.color = '#666';
+
+    document.getElementById(tabId).style.display = 'block';
+    btn.style.background = 'rgba(0,255,102,0.1)';
+    btn.style.color = '#00ff66';
 }
 
 function selectPackage(pkg, element) {
@@ -24,32 +32,27 @@ function showToast(message) {
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3500);
 }
 
-// --- TẠO LINK4M TRỰC TIẾP TRÊN FRONTEND (GITHUB) ---
+// Tạo link rút gọn Link4M tự động trỏ tới trang get-key.html
 async function generateLink4mKey() {
-    // Tự động lấy URL trang get-key.html hiện tại trên GitHub Pages của bạn
     const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
     const destinationUrl = currentPath + 'get-key.html';
-    
     const apiUrl = `https://link4m.co/api-shorten/v2?api=${LINK4M_API_KEY}&url=${encodeURIComponent(destinationUrl)}`;
 
     try {
-        showToast("Đang tạo Link lấy Key...");
+        showToast("Đang kết nối Link4M API...");
         const response = await fetch(apiUrl);
         const data = await response.json();
 
         if (data.status === 'success' && data.shortenedUrl) {
             window.open(data.shortenedUrl, '_blank');
         } else {
-            // Fallback mở trực tiếp nếu bị CORS chặn
-            window.open(apiUrl, '_blank');
+            window.open(`https://link4m.co/st?api=${LINK4M_API_KEY}&url=${encodeURIComponent(destinationUrl)}`, '_blank');
         }
     } catch (err) {
-        // Mở dự phòng nếu lỗi mạng
         window.open(`https://link4m.co/st?api=${LINK4M_API_KEY}&url=${encodeURIComponent(destinationUrl)}`, '_blank');
     }
 }
 
-// --- ADMIN CONTROL ---
 function loginAdmin() {
     const u = document.getElementById('admUser').value.trim();
     const p = document.getElementById('admPass').value.trim();
@@ -59,13 +62,8 @@ function loginAdmin() {
         document.getElementById('adminDashboard').style.display = 'block';
         loadKeyTable();
     } else {
-        alert("Sai thông tin Quản Trị Viên!");
+        alert("Sai tài khoản hoặc mật khẩu Admin!");
     }
-}
-
-function logoutAdmin() {
-    document.getElementById('adminLoginBox').style.display = 'block';
-    document.getElementById('adminDashboard').style.display = 'none';
 }
 
 function generateRandomKey() {
@@ -88,19 +86,17 @@ async function createAdminKey() {
         alert(`Tạo Key Thành Công!\nKey: ${keyVal}`);
         loadKeyTable();
     } catch (err) {
-        alert("Lỗi khi tạo Key trên Cloud!");
+        alert("Lỗi khi tạo Key trên Đám Mây!");
     }
 }
 
 async function loadKeyTable() {
     const tbody = document.getElementById('keyListBody');
-    tbody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
-    
+    tbody.innerHTML = '<tr><td colspan="3">Đang tải...</td></tr>';
     try {
         const res = await fetch(`${DB_URL}/vip_keys.json`);
         const data = await res.json() || {};
         tbody.innerHTML = '';
-
         const now = new Date().getTime();
         Object.keys(data).forEach(k => {
             const item = data[k];
@@ -114,7 +110,7 @@ async function loadKeyTable() {
             tbody.appendChild(tr);
         });
     } catch(e) {
-        tbody.innerHTML = '<tr><td colspan="3">Lỗi tải danh sách!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3">Chưa có Key nào!</td></tr>';
     }
 }
 
@@ -123,17 +119,16 @@ async function deleteKey(keyId) {
     loadKeyTable();
 }
 
-// --- BUFF LIKE LOGIC ---
 async function handleBuff() {
     const ign = document.getElementById('ign').value.trim();
     const ffid = document.getElementById('ffid').value.trim();
 
-    if (!ign) return alert("Vui lòng nhập Tên Nhân Vật!");
-    if (ffid.length !== 8 || isNaN(ffid)) return alert("ID Free Fire phải đủ chính xác 8 số!");
+    if (!ign) return alert("Vui lòng nhập Tên Nhân Vật Free Fire!");
+    if (ffid.length !== 8 || isNaN(ffid)) return alert("ID Free Fire phải đúng chính xác 8 số!");
 
     const checkRes = await fetch(`${DB_URL}/buffed_ids/${ffid}.json`);
     if (await checkRes.json() !== null) {
-        return alert("ID này đã thực hiện buff trên hệ thống rồi! Mỗi ID chỉ được 1 lần.");
+        return alert("ID này đã thực hiện buff rồi! Mỗi ID chỉ được 1 lần.");
     }
 
     if (selectedPkg === 50) {
@@ -161,14 +156,13 @@ async function verifyAndBuff200() {
         const res = await fetch(`${DB_URL}/vip_keys/${inputKey}.json`);
         const keyData = await res.json();
 
-        if (!keyData) return alert("Key VIP không tồn tại hoặc đã được sử dụng!");
-        if (new Date().getTime() > keyData.expiry) return alert("Key VIP này đã hết hạn sử dụng!");
+        if (!keyData) return alert("Key VIP không chính xác hoặc đã được sử dụng!");
+        if (new Date().getTime() > keyData.expiry) return alert("Key VIP này đã hết hạn!");
 
         await sendDiscordWebhook(ign, ffid, "+200 Like (VIP)", `VIP Key: ${inputKey}`);
 
-        // Đánh dấu ID đã buff và XÓA KEY (Chỉ dùng 1 lần duy nhất)
         await fetch(`${DB_URL}/buffed_ids/${ffid}.json`, { method: 'PUT', body: JSON.stringify({ ign, time: Date.now() }) });
-        await fetch(`${DB_URL}/vip_keys/${inputKey}.json`, { method: 'DELETE' });
+        await fetch(`${DB_URL}/vip_keys/${inputKey}.json`, { method: 'DELETE' }); // Xóa key để chống dùng lại
 
         closeVipModal();
         showToast("Đã gửi thành công! Vui lòng chờ admin phê duyệt 📢");
@@ -181,13 +175,13 @@ async function verifyAndBuff200() {
 function sendDiscordWebhook(ign, ffid, packageName, note) {
     const payload = {
         embeds: [{
-            title: "⚡ HACKER BUFF LIKE REQUEST",
+            title: "🚀 YÊU CẦU BUFF LIKE FREE FIRE MỚI",
             color: 65280,
             fields: [
-                { name: "👤 Ingame Name", value: `\`${ign}\``, inline: true },
-                { name: "🆔 Target ID", value: `\`${ffid}\``, inline: true },
-                { name: "🎁 Package", value: `\`${packageName}\``, inline: false },
-                { name: "🔐 Authentication", value: `\`${note}\``, inline: false }
+                { name: "👤 Tên Nhân Vật", value: `\`${ign}\``, inline: true },
+                { name: "🆔 ID Free Fire", value: `\`${ffid}\``, inline: true },
+                { name: "🎁 Gói Buff", value: `\`${packageName}\``, inline: false },
+                { name: "🔐 Xác Thực Key", value: `\`${note}\``, inline: false }
             ]
         }]
     };
