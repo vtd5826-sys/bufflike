@@ -32,30 +32,14 @@ function showToast(message) {
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3500);
 }
 
-// --- ĐÃ SỬA LỖI API LINK4M CHO GITHUB PAGES ---
-async function generateLink4mKey() {
-    // Tự động lấy URL trang get-key.html hiện tại của bạn trên GitHub
+// ĐÃ SỬA: Dùng trực tiếp link API Link4M để chuyển hướng mượt mà, không bị lỗi kẹt màn hình trên GitHub Pages
+function generateLink4mKey() {
     const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
     const destinationUrl = currentPath + 'get-key.html';
-    const apiUrl = `https://link4m.co/api-shorten/v2?api=${LINK4M_API_KEY}&url=${encodeURIComponent(destinationUrl)}`;
+    const link4mUrl = `https://link4m.co/api-shorten/v2?api=${LINK4M_API_KEY}&url=${encodeURIComponent(destinationUrl)}`;
 
-    showToast("Đang tạo liên kết vượt link...");
-
-    try {
-        // Thử gọi API lấy link rút gọn JSON
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-
-        if (data && data.shortenedUrl) {
-            window.open(data.shortenedUrl, '_blank');
-        } else {
-            // Fallback sang cổng chuyển hướng trực tiếp nếu cấu trúc phản hồi thay đổi
-            window.open(`https://link4m.co/st?api=${LINK4M_API_KEY}&url=${encodeURIComponent(destinationUrl)}`, '_blank');
-        }
-    } catch (err) {
-        // Nếu bị chặn CORS hoàn toàn, tự động mở link dự phòng Link4M để người dùng không bị kẹt
-        window.open(`https://link4m.co/st?api=${LINK4M_API_KEY}&url=${encodeURIComponent(destinationUrl)}`, '_blank');
-    }
+    showToast("Đang mở trang lấy Key VIP...");
+    window.open(link4mUrl, '_blank');
 }
 
 function loginAdmin() {
@@ -167,7 +151,7 @@ async function verifyAndBuff200() {
         await sendDiscordWebhook(ign, ffid, "+200 Like (VIP)", `VIP Key: ${inputKey}`);
 
         await fetch(`${DB_URL}/buffed_ids/${ffid}.json`, { method: 'PUT', body: JSON.stringify({ ign, time: Date.now() }) });
-        await fetch(`${DB_URL}/vip_keys/${inputKey}.json`, { method: 'DELETE' }); // Xóa key để chống dùng lại
+        await fetch(`${DB_URL}/vip_keys/${inputKey}.json`, { method: 'DELETE' }); // Tự động xóa key sau khi dùng
 
         closeVipModal();
         showToast("Đã gửi thành công! Vui lòng chờ admin phê duyệt 📢");
